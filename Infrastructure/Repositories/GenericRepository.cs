@@ -47,23 +47,6 @@ public abstract class GenericRepositoryEF<TInterface, TDomain, TDataModel>
         await SaveChangesAsync();
     }
 
-    public IEnumerable<TInterface> GetAll()
-    {
-        var dataModels = _context.Set<TDataModel>().ToList();
-        return dataModels.Select(d => _mapper.Map<TDataModel, TDomain>(d));
-    }
-
-    public async Task<IEnumerable<TInterface>> GetAllAsync()
-    {
-        var dataModels = await _context.Set<TDataModel>().ToListAsync();
-        var returned = dataModels.Select(d => _mapper.Map<TDataModel, TDomain>(d));
-        return returned;
-    }
-
-    public abstract TInterface? GetById(Guid id);
-
-    public abstract Task<TInterface?> GetByIdAsync(Guid id);
-
     public void Remove(TInterface entity)
     {
         var domainEntity = (TDomain)entity;

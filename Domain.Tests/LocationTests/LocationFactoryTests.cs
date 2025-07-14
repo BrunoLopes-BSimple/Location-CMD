@@ -41,4 +41,20 @@ public class LocationFactoryTests
         Assert.NotEqual(Guid.Empty, result.Id);
         Assert.Equal(description, result.Description);
     }
+
+    [Fact]
+    public void LocationFactory_WhenPassingValidIdAndDescription_ShouldCreateLocation()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var description = "some description";
+        var factory = new LocationFactory();
+
+        // act
+        var result = factory.Create(id, description);
+
+        // assert
+        Assert.NotEqual(Guid.Empty, result.Id);
+        Assert.Equal(description, result.Description);
+    }
 }

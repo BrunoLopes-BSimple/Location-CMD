@@ -6,5 +6,5 @@ namespace Domain.IRepository;
 
 public interface ILocationRepository : IGenericRepositoryEF<ILocation, Location, ILocationVisitor>
 {
-
+    public Task<bool> AlreadyExists(Guid locationId);
 }

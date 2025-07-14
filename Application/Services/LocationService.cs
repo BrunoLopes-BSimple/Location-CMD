@@ -4,21 +4,22 @@ using Application.IService;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Factories.LocationFactory;
+using Domain.Interfaces;
 using Domain.IRepository;
 
 namespace Application.Services;
 
 public class LocationService : ILocationService
 {
-    private readonly ILocationRepository _repository;
-    private readonly ILocationFactory _factory;
+    private readonly ILocationRepository _locationRepo;
+    private readonly ILocationFactory _locationFactory;
     private readonly IMapper _mapper;
     private readonly IMessagePublisher _publisher;
 
     public LocationService(ILocationRepository repository, ILocationFactory factory, IMapper mapper, IMessagePublisher publisher)
     {
-        _repository = repository;
-        _factory = factory;
+        _locationRepo = repository;
+        _locationFactory = factory;
         _mapper = mapper;
         _publisher = publisher;
     }
@@ -28,10 +29,19 @@ public class LocationService : ILocationService
         if (dto == null || string.IsNullOrWhiteSpace(dto.Description))
             throw new ArgumentException("Invalid location input.");
 
-        var location = _factory.Create(dto.Description);
-        await _repository.AddAsync(location);
+        var location = _locationFactory.Create(dto.Description);
+        await _locationRepo.AddAsync(location);
 
         await _publisher.PublishLocationCreatedAsync(location);
         return _mapper.Map<LocationDTO>(location);
+    }
+
+    public async Task<ILocation?> AddLocationReferenceAsync(LocationReference reference)
+    {
+        var locationAlreadyExists = await _locationRepo.AlreadyExists(reference.Id);
+        if (locationAlreadyExists) return null;
+
+        var newLocation = _locationFactory.Create(reference.Id, reference.Description);
+        return await _locationRepo.AddAsync(newLocation);
     }
 }

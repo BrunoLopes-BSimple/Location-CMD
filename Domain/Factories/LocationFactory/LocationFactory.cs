@@ -17,4 +17,9 @@ public class LocationFactory : ILocationFactory
     {
         return new Location(description);
     }
+
+    public ILocation Create(Guid id, string description)
+    {
+        return new Location(id, description);
+    }
 }

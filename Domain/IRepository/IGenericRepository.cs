@@ -5,10 +5,6 @@ public interface IGenericRepositoryEF<TInterface, TDomain, TDataModel>
         where TDomain : class, TInterface
         where TDataModel : class
 {
-    TInterface? GetById(Guid id);
-    Task<TInterface?> GetByIdAsync(Guid id);
-    IEnumerable<TInterface> GetAll();
-    Task<IEnumerable<TInterface>> GetAllAsync();
     TInterface Add(TInterface entity);
     Task<TInterface> AddAsync(TInterface entity);
     void AddRange(IEnumerable<TInterface> entities);

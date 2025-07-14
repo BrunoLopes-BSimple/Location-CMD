@@ -19,6 +19,7 @@ builder.Services.AddDbContext<LocationContext>(opt => opt.UseNpgsql(builder.Conf
 builder.Services.AddScoped<ILocationService, LocationService>();
 
 // Repositories
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 
 // Factories
 builder.Services.AddScoped<ILocationFactory, LocationFactory>();
