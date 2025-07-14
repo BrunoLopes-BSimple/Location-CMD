@@ -1,6 +1,0 @@
-{
-  "Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\brunolopes\\Desktop\\Projetos\\Microservices\\Avaliação\\Location-CMD\\Application",
-  "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\brunolopes\\Desktop\\Projetos\\Microservices\\Avaliação\\Location-CMD\\Domain",
-  "Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\brunolopes\\Desktop\\Projetos\\Microservices\\Avaliação\\Location-CMD\\Infrastructure",
-  "InterfaceAdapters, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\brunolopes\\Desktop\\Projetos\\Microservices\\Avaliação\\Location-CMD\\InterfaceAdapters"
-}
