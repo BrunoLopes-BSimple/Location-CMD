@@ -11,7 +11,7 @@ public class LocationRepository : GenericRepositoryEF<ILocation, Location, Locat
 {
     private readonly IMapper _mapper;
 
-    public LocationRepository(DbContext context, IMapper mapper) : base(context, mapper)
+    public LocationRepository(LocationContext context, IMapper mapper) : base(context, mapper)
     {
         _mapper = mapper;
     }
