@@ -8,6 +8,8 @@ using Domain.IRepository;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Resolvers;
+using InterfaceAdapters;
+using InterfaceAdapters.Consumers;
 using InterfaceAdapters.Publisher;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +17,6 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer(); 
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<LocationContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -48,10 +48,20 @@ builder.Services.AddAutoMapper(cfg =>
 // MassTransit
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<LocationCreatedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq://localhost");
+
+        var instance = InstanceInfo.InstanceId;
+        cfg.ReceiveEndpoint($"collaborators-cmd-{instance}", e =>
+        {
+            e.ConfigureConsumers(context);
+        });
     });
+
+
 });
 
 
@@ -63,14 +73,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Location API V1");
-        c.RoutePrefix = "swagger"; 
-    });
+    app.UseSwaggerUI();
 }
-
 
 app.UseCors(builder => builder
                 .AllowAnyHeader()
