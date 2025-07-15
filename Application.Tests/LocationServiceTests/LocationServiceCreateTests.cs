@@ -12,7 +12,7 @@ namespace Application.Tests.LocationServiceTests;
 public class LocationServiceCreateTests
 {
     [Fact]
-    public async Task Create_WithValidInput_ShouldReturnLocationDTO()
+    public async Task Create_WithValidInput_ShouldReturnSuccessResultWithDTO()
     {
         // arrange
         var id = Guid.NewGuid();
@@ -43,16 +43,18 @@ public class LocationServiceCreateTests
         var result = await service.Create(createLocationInput);
 
         // assert
-        Assert.NotNull(result);
-        Assert.Equal(expectedDto.Id, result.Id);
-        Assert.Equal(expectedDto.Description, result.Description);
+        Assert.True(result.IsSuccess);
+        Assert.Null(result.Error);
+        Assert.NotNull(result.Value);
+        Assert.Equal(expectedDto.Id, result.Value.Id);
+        Assert.Equal(expectedDto.Description, result.Value.Description);
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public async Task Create_WithNullOrWhitespaceDescription_ShouldThrowArgumentException(string invalidDescription)
+    public async Task Create_WithInvalidInput_ShouldReturnFailureResult(string invalidDescription)
     {
         // Arrange
         var input = new CreateLocationInput { Description = invalidDescription };
@@ -64,8 +66,15 @@ public class LocationServiceCreateTests
 
         var service = new LocationService(repoDouble.Object, factoryDouble.Object, mapperDouble.Object, publisherDouble.Object);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => service.Create(input));
+        // Act
+        var result = await service.Create(input);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.NotNull(result.Error);
+        Assert.Equal(400, result.Error.StatusCode);
+        Assert.Equal("Invalid location input.", result.Error.Message);
         factoryDouble.Verify(f => f.Create(It.IsAny<string>()), Times.Never);
     }
 }

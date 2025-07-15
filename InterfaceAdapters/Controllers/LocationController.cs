@@ -19,11 +19,11 @@ public class LocationController : ControllerBase
     public async Task<ActionResult<LocationDTO>> Create(CreateLocationDTO dto)
     {
         var locationInput = new CreateLocationInput { Description = dto.Description };
-        var locationCreated = await _service.Create(locationInput);
+        var result = await _service.Create(locationInput);
 
-        if (locationCreated != null)
-            return Created("Location Created", locationCreated);
+        if (result.IsSuccess)
+            return result.ToActionResult();
 
-        return BadRequest();
+        return result.ToActionResult();
     }
 }

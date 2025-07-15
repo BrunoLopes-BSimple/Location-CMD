@@ -24,16 +24,24 @@ public class LocationService : ILocationService
         _publisher = publisher;
     }
 
-    public async Task<LocationDTO> Create(CreateLocationInput dto)
+    public async Task<Result<LocationDTO>> Create(CreateLocationInput dto)
     {
         if (dto == null || string.IsNullOrWhiteSpace(dto.Description))
-            throw new ArgumentException("Invalid location input.");
+            return Result<LocationDTO>.Failure(Error.BadRequest("Invalid location input."));
 
-        var location = _locationFactory.Create(dto.Description);
-        await _locationRepo.AddAsync(location);
+        try
+        {
+            var location = _locationFactory.Create(dto.Description);
+            await _locationRepo.AddAsync(location);
 
-        await _publisher.PublishLocationCreatedAsync(location);
-        return _mapper.Map<LocationDTO>(location);
+            await _publisher.PublishLocationCreatedAsync(location);
+            var result = _mapper.Map<LocationDTO>(location);
+            return Result<LocationDTO>.Success(result);
+        }
+        catch (Exception e)
+        {
+            return Result<LocationDTO>.Failure(Error.InternalServerError(e.Message));
+        }
     }
 
     public async Task<ILocation?> AddLocationReferenceAsync(LocationReference reference)

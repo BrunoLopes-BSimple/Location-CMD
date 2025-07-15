@@ -5,6 +5,6 @@ namespace Application.IService;
 
 public interface ILocationService
 {
-    public Task<LocationDTO> Create(CreateLocationInput dto);
+    public Task<Result<LocationDTO>> Create(CreateLocationInput dto);
     public Task<ILocation?> AddLocationReferenceAsync(LocationReference reference);
 }
