@@ -4,5 +4,6 @@ namespace Application.IPublisher;
 
 public interface IMessagePublisher
 {
-    Task PublishLocationCreatedAsync(ILocation location);
+    public Task PublishLocationCreatedAsync(ILocation location);
+    public Task PublishRequestedLocationAsync(Guid meetingId, ILocation location);
 }

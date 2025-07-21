@@ -49,15 +49,21 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<LocationCreatedConsumer>();
+    x.AddConsumer<CreateLocationConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq://localhost");
 
         var instance = InstanceInfo.InstanceId;
-        cfg.ReceiveEndpoint($"collaborators-cmd-{instance}", e =>
+        cfg.ReceiveEndpoint($"location-cmd-{instance}", e =>
         {
             e.ConfigureConsumers(context);
+        });
+
+        cfg.ReceiveEndpoint("data-for-location", e =>
+        {
+            e.ConfigureConsumer<CreateLocationConsumer>(context);
         });
     });
 

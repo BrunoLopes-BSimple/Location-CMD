@@ -52,4 +52,12 @@ public class LocationService : ILocationService
         var newLocation = _locationFactory.Create(reference.Id, reference.Description);
         return await _locationRepo.AddAsync(newLocation);
     }
+
+    public async Task CreateRequestedLocation(Guid meetingId, string description)
+    {
+        var newLocation = _locationFactory.Create(Guid.NewGuid(), description);
+        await _locationRepo.AddAsync(newLocation);
+
+        await _publisher.PublishRequestedLocationAsync(meetingId, newLocation);
+    }
 }
